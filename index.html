@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Directory of VCs, accelerators, angel networks, corporate VCs and sovereign funds that give founders benefits beyond capital.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Funds With Benefits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: ledger directory — stats strip, sticky filters, one expandable "term sheet" row per fund, then the submission desk */
+:root{
+  --bg:#f3f5f2; --surface:#ffffff; --ink:#15211c; --muted:#5b6a63; --line:#dbe2dd;
+  --accent:#1d6b4f; --accent-soft:#e2efe8; --warn:#8a5a12; --warn-soft:#f6ecd9; --sov:#3c4f8f; --sov-soft:#e5e9f6; --bad:#a3392f;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"IBM Plex Sans",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1513; --surface:#161e1b; --ink:#e4ebe7; --muted:#97a69f; --line:#27322e;
+  --accent:#5cc79b; --accent-soft:#18322a; --warn:#e0b16a; --warn-soft:#33281a; --sov:#9fb0ee; --sov-soft:#1e2540; --bad:#ec8a7f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1513; --surface:#161e1b; --ink:#e4ebe7; --muted:#97a69f; --line:#27322e;
+  --accent:#5cc79b; --accent-soft:#18322a; --warn:#e0b16a; --warn-soft:#33281a; --sov:#9fb0ee; --sov-soft:#1e2540; --bad:#ec8a7f; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55}
+.wrap{max-width:1100px;margin:0 auto;padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{display:grid;gap:10px;margin-bottom:18px}
+.domain{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(32px,6vw,52px);line-height:1.02;margin:0;text-wrap:balance;letter-spacing:-.02em}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(24px,4vw,32px);margin:0;text-wrap:balance}
+.lede{max-width:66ch;color:var(--muted);margin:0}
+.stats{display:flex;flex-wrap:wrap;gap:6px 22px;font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stats b{color:var(--ink);font-weight:500}
+.navlinks{display:flex;gap:14px;flex-wrap:wrap;font-size:14px}
+.controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:12px;border-bottom:1px solid var(--line);display:grid;gap:10px;margin-bottom:8px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.row1{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,textarea{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);min-width:0}
+input[type=search]{flex:1 1 240px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:500 13px var(--body);padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn{font:500 13px var(--body);padding:9px 12px;border-radius:8px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer}
+.btn.solid{background:var(--accent);color:var(--surface)}
+.btn.bad{border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.count{font-family:var(--mono);font-size:12px;color:var(--muted)}
+details.fund{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.3fr) minmax(0,2.5fr) 20px;gap:16px;align-items:baseline;padding:14px 4px}
+summary::-webkit-details-marker{display:none}
+summary:hover .nm{color:var(--accent)}
+.nm{font-family:var(--display);font-weight:500;font-size:18px;line-height:1.2}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.tag{font:500 11px var(--mono);letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+.tag.geo{background:var(--warn-soft);color:var(--warn)}
+.tag.sov{background:var(--sov-soft);color:var(--sov)}
+.tag.tier{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.size{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums}
+.hook{color:var(--muted);font-size:14px}
+.chev{font-family:var(--mono);color:var(--muted);transition:transform .15s}
+details[open] .chev{transform:rotate(90deg)}
+.sheet{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px;padding:4px 4px 22px}
+.f{min-width:0}
+.f h4{margin:0 0 4px;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.f p{margin:0;overflow-wrap:anywhere}
+.f.wide{grid-column:1/-1}
+.dim{color:var(--muted);font-style:italic}
+a{color:var(--accent)}
+.src{font-size:13px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.visit{font-weight:600}
+.empty{padding:40px 4px;color:var(--muted)}
+.hdr{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1.3fr) minmax(0,2.5fr) 20px;gap:16px;padding:10px 4px 4px;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.more{display:flex;justify-content:center;padding:18px 0}
+section.desk{margin-top:56px;padding-top:28px;border-top:2px solid var(--ink);display:grid;gap:18px}
+.deskgrid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:28px;align-items:start}
+form{display:grid;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:grid;gap:4px;font-size:13px;font-weight:500;min-width:0}
+label small{font-weight:400;color:var(--muted)}
+textarea{min-height:72px;resize:vertical}
+.note{font-size:13px;color:var(--muted);margin:0}
+.status{font-size:14px;min-height:1.4em}
+.status.ok{color:var(--accent)} .status.err{color:var(--bad)}
+.queue{display:grid;gap:10px}
+.qi{border:1px solid var(--line);border-radius:8px;padding:12px;background:var(--surface);display:grid;gap:6px}
+.qi .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pill{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:999px}
+.pill.pending{background:var(--warn-soft);color:var(--warn)}
+.pill.approved{background:var(--accent-soft);color:var(--accent)}
+.pill.rejected{background:transparent;border:1px solid var(--bad);color:var(--bad)}
+.qi .acts{display:flex;gap:8px;flex-wrap:wrap}
+.qi dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px;font-size:13px}
+.qi dt{color:var(--muted)} .qi dd{margin:0;overflow-wrap:anywhere}
+#modPanel{border:2px dashed var(--sov);border-radius:10px;padding:16px;display:grid;gap:12px}
+footer{margin-top:36px;color:var(--muted);font-size:13px;max-width:74ch}
+@media (max-width:760px){
+  summary,.hdr{grid-template-columns:minmax(0,1fr) 20px}
+  summary .size,summary .hook,.hdr span:nth-child(2),.hdr span:nth-child(3){display:none}
+  .sheet,.deskgrid,.fr{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){.chev{transition:none}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header>
+  <div class="domain">fundswithbenefits.org</div>
+  <h1>Funds that bring more than the cheque</h1>
+  <p class="lede">VCs, accelerators, angel networks, corporate VCs and sovereign wealth funds worldwide, with the benefits they offer founders beyond capital. Every listing links back to the fund's own site.</p>
+  <div class="stats" id="stats"></div>
+  <div class="navlinks"><a href="#submit">Submit your fund</a><span class="count">Researched 2 Nov 2026</span></div>
+</header>
+
+<div class="controls">
+  <div class="row1">
+    <input type="search" id="q" placeholder="Search name, country, portfolio, perk or news" aria-label="Search funds">
+    <select id="region" aria-label="Region"></select>
+    <select id="country" aria-label="Country"></select>
+    <button class="btn" id="copy" type="button">Copy as CSV</button>
+  </div>
+  <div class="row1">
+    <div class="chips" role="group" aria-label="Type" id="typeChips"></div>
+    <div class="chips" role="group" aria-label="Profile depth" id="tierChips"></div>
+    <span class="count" id="count"></span>
+  </div>
+</div>
+
+<div class="hdr" aria-hidden="true"><span>Fund</span><span>Size / cheque</span><span>Headline benefit</span><span></span></div>
+<div id="list"></div>
+<div class="more"><button class="btn" id="moreBtn" type="button" hidden>Show more</button></div>
+
+<section class="desk" id="submit">
+  <div style="display:grid;gap:6px">
+    <div class="domain">Submission desk</div>
+    <h2>Submit your fund</h2>
+    <p class="lede">Run a fund, accelerator, angel network or state program with real founder benefits? Email the details below. Every submission is reviewed before it is added to the directory.</p>
+  </div>
+  <div class="deskgrid">
+    <div class="qi" style="padding:18px;gap:12px">
+      <h4 style="margin:0;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Send submissions to</h4>
+      <div class="row1"><span id="email" style="font-family:var(--display);font-size:24px;user-select:all">meraj@code.in</span><button class="btn" type="button" id="copyEmail">Copy email</button></div>
+      <p class="note">Subject line: <span style="font-family:var(--mono);user-select:all">Fund submission: [Fund name]</span></p>
+    </div>
+    <div style="display:grid;gap:10px">
+      <h4 style="margin:0;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">Include in your email</h4>
+      <pre id="tpl" style="margin:0;white-space:pre-wrap;font:13px/1.6 var(--mono);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto">Fund name:
+Type (VC / Accelerator / Program / Angel / CVC / Sovereign / Government):
+Country (HQ):
+Website:
+Fund size / cheque size:
+Benefits offered to founders:
+Notable portfolio:
+Anti-portfolio (deals you passed on, optional):
+Recent news (with link):
+Public contact for founders:
+Your name and role:</pre>
+      <div class="row1"><button class="btn" type="button" id="copyTpl">Copy template</button></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p><b>Researched</b> profiles were checked against public sources on 2 Nov 2026 and cite them. <b>Listed</b> profiles are compiled from public information with sizes as last disclosed; treat them as a starting point and confirm on the fund's site. New funds are added after an emailed submission is reviewed. Anti-portfolio is shown only when a fund has published one.</p>
+</footer>
+</div>
+
+<script src="funds.js"></script>
+<script>
+let db=null,user=null,uid=null,isMod=false,myItems=[];
+const F=[
+{n:"Y Combinator",t:"Accelerator",r:"Global",u:"https://www.ycombinator.com",
+ size:"$500K per company",sizeD:"Standard deal: $125K for 7% (post-money SAFE) + $375K uncapped MFN SAFE. Four batches a year.",
+ hook:"Bookface, YC Deals perks, Demo Day investor access",
+ ben:"Bookface alumni network, YC Deals (partner perks/credits), Demo Day, Startup School, co-founder matching, Launch YC. Option to take the investment in USDC stablecoin.",
+ port:"Airbnb, Stripe, Coinbase, DoorDash, Reddit",anti:"",
+ news:"May 2026: OpenAI offered $2M in API tokens (for equity) to each company in the Spring 2026 batch. Winter 2027 applications closed 2 Nov 2026.",
+ contact:"Apply: ycombinator.com/apply",
+ src:[["YC deal 2026","https://blog.mean.ceo/yc-news-june-2026/"],["OpenAI tokens offer","https://dev.to/thousand_miles_ai/openais-2m-tokens-for-equity-yc-deal-decoded-4hjg"],["USDC option","https://theblock.co/post/400239/y-combinator-crypto-startup-interviews-new-york-first-time"]]},
+{n:"a16z speedrun",t:"Accelerator",r:"Global",u:"https://speedrun.a16z.com",
+ size:"Up to $1M",sizeD:"$500K for 10% on joining + $500K in next round within 18 months. Parent a16z raised $15B+ across five funds (Jan 2026).",
+ hook:"$5M+ in AWS, OpenAI, Nvidia, Deel credits",
+ ben:"$5M+ in vendor credits, 12-week SF residency, founder retreat, access to a16z network and partners, Demo Day. Thesis: AI, games, entertainment and consumer tech.",
+ port:"a16z: Coinbase, Airbnb, Databricks, GitHub",anti:"",
+ news:"SR008 applications ran 12 Oct – 1 Nov 2026; residency 1 Feb – 18 Apr 2027. a16z crypto closed a $2.2B Fund 5 in 2026.",
+ contact:"sr-team@a16z.com",
+ src:[["a16z $15B raise","https://www.bloomberg.com/news/articles/2026-01-09/andreessen-horowitz-raises-15-billion-in-its-largest-ever-funding"],["speedrun perks","https://www.techcrunch.com/2026/02/15/how-to-get-into-a16zs-super-competitive-speedrun-startup-accelerator-program/"],["SR008 dates","https://a16z.com/applications-for-a16z-speedrun-sr008-are-now-open/"]]},
+{n:"Sequoia Arc",t:"Accelerator",r:"Global",u:"https://www.sequoiacap.com/arc/",
+ size:"$500K–$1M (reported)",sizeD:"Company-specific terms; cohorts of roughly 10–12 companies. Bi-annual open call.",
+ hook:"7-week company-building immersion with Sequoia partners",
+ ben:"Arc Intensive (4-day program on Sequoia frameworks), 1:1 partner time, customer access, investor network, partner credits stack. Americas and Europe.",
+ port:"Sequoia: Apple, Nvidia, Instagram, Klarna, Stripe",anti:"",
+ news:"Fall 2026 cohort deadline was 17 Aug 2026; programs run from San Francisco and London.",
+ contact:"Apply: sequoiacap.com/arc",
+ src:[["Arc Fall 2026","https://startupintros.com/resources/sequoia-arc-fall-2026"],["Arc overview","https://superscout.co/program/sequoia-arc"]]},
+{n:"First Round Capital",t:"VC",r:"Global",u:"https://firstround.com",
+ size:"Fund X target $500M",sizeD:"Tenth flagship fund launched Sept 2025; ~$3B AUM. Pre-seed to early Series A.",
+ hook:"First Round Review, founder community and platform",
+ ben:"Deep platform: First Round Review playbooks, founder peer community, talent and customer intros, events for portfolio operators.",
+ port:"Uber, Square, Warby Parker",anti:"",
+ news:"Led Vybe's $10M seed (Dec 2025). Fund X filing targets $500M.",
+ contact:"firstround.com",
+ src:[["Fund X","https://www.venturecapitaljournal.com/first-round-capital-launches-fund-x-targeting-500m/"],["AUM","https://inforcapital.com/news/first-round-capital-eyes-fund-ix-before-launching-fund-x/"]]},
+{n:"Bessemer Venture Partners",t:"VC",r:"Global",u:"https://www.bvp.com",
+ size:"$20B+ AUM",sizeD:"BVP XII $3.85B; BVP Forge II $1B (Nov 2025); India Fund II $350M (Mar 2025).",
+ hook:"Published roadmaps, research and ForgeEdge operating program",
+ ben:"40 proprietary technology roadmaps, 60+ research publications a year, ForgeEdge engineering/GTM/talent support, AI Velocity initiative for AI adoption.",
+ port:"Pinterest, Shopify, Twilio, LinkedIn, Toast · India: Swiggy, Urban Company, BigBasket",
+ anti:"Apple, eBay, Gateway, Blue Nile — full list on bvp.com/anti-portfolio",
+ news:"BVP Forge II closed at $1B in under four months (Nov 2025). Second India fund ($350M) targets AI services, SaaS, fintech and cybersecurity.",
+ contact:"bvp.com",
+ src:[["Forge II","https://inforcapital.com/funds/bessemer-venture-partners-bvp-forge-ii/"],["India Fund II","https://yourstory.com/2025/03/bessemer-venture-partners-350-million-second-india-focused-fund-ai-cybersecurity-startups"],["Anti-portfolio history","https://wikiwand.com/en/articles/Bessemer_Venture_Partners"]]},
+{n:"Lightspeed Venture Partners",t:"VC",r:"Global",u:"https://lsvp.com",
+ size:"$9B+ raised Dec 2025",sizeD:"Fund XV-A $980M, XV-B $1.2B, Select VI $1.8B, Opportunity III $3.3B, Co-Invest I $600M. India Partners V targeting $250M.",
+ hook:"Multi-stage follow-on capacity; India + global platform",
+ ben:"Seed-to-growth follow-on via a $3.3B opportunity fund, global talent and GTM network, India/SEA team aligned with global fund cycle from Fund V.",
+ port:"Anthropic, OYO, Razorpay, Zepto",anti:"",
+ news:"Sept 2026: Lightspeed India Partners V targets $250M for early-stage AI, ~80% committed.",
+ contact:"Press: rachel@lsvp.com",
+ src:[["$9B close","https://www.davispolk.com/experience/lightspeed-9-billion-fundraise-across-six-new-funds"],["India Fund V","https://techcrunch.com/2026/09/24/lightspeed-targets-250m-for-new-india-fund-focusing-on-early-stage-ai/"]]},
+{n:"Index Ventures",t:"VC",r:"Global",u:"https://www.indexventures.com",
+ size:"$3.5B investable",sizeD:"July 2026: $400M seed fund, $900M venture fund, growth fund topped up to $2.2B.",
+ hook:"Open founder guides on equity and talent",
+ ben:"Published playbooks on employee stock options and hiring, seed-to-IPO support, offices in SF, London, NYC, Geneva.",
+ port:"Figma, Discord, Notion, Roblox, Wiz",anti:"",
+ news:"Raised $2B fresh capital in July 2026 after its Wiz payout.",
+ contact:"indexventures.com",
+ src:[["$2B raise","https://sifted.eu/articles/index-ventures-2bn-raise-ai"],["Fund breakdown","https://dealroom.co/news/142415-index-ventures-raises-2b-in-fresh-capital-lifting-total-to-3-5b-across-s/"]]},
+{n:"General Catalyst",t:"VC",r:"Global",u:"https://www.generalcatalyst.com",
+ size:"$8B (2024); $10B in talks",sizeD:"Fund XII $6B + $2B SMAs (2024), incl. $750M Health Assurance. Committed $5B to India over five years.",
+ hook:"Company creation and venture-buyout capital",
+ ben:"$1.5B for company creation and venture buyouts, health-system transformation programs, global resilience thesis.",
+ port:"Stripe, Airbnb, Anduril",anti:"",
+ news:"Mar 2026: in talks to raise ~$10B. Acquiring Janus Henderson with Trian ($7.4B), expected to close mid-2026.",
+ contact:"generalcatalyst.com",
+ src:[["$10B talks","https://www.privateequitywire.co.uk/general-catalyst-discusses-raising-10bn-across-multiple-funds/"],["Fund XII","https://hitconsultant.net/?p=83376"]]},
+{n:"NFX",t:"VC",r:"Global",u:"https://www.nfx.com",
+ size:"Fund IV $325M",sizeD:"Pre-seed through Series A; investing from Fund IV through 2027. Prior Fund III $450M.",
+ hook:"NFX Signal investor network and network-effects playbooks",
+ ben:"NFX Signal (free investor-discovery platform), network-effects essays and frameworks, early-stage platform support.",
+ port:"Stoke Space, Centivax, Tomo",anti:"",
+ news:"Closed Fund IV at $325M (Oct 2025) with focus on AI, bioplatforms, space and security.",
+ contact:"nfx.com · signal.nfx.com",
+ src:[["Fund IV","https://f4.fund/firms/nfx/activity"],["Investing through 2027","https://www.calcalistech.com/ctechnews/article/any849tda"]]},
+{n:"South Park Commons",t:"Program",r:"Global",u:"https://www.southparkcommons.com",
+ size:"$1M per fellow",sizeD:"$400K for 7% on a SAFE + $600K guaranteed in next round. Fund III $275M; India fund $40M; raising Fund IV ($500M).",
+ hook:"Funds founders at the pre-idea stage",
+ ben:"Lifetime community membership, in-person bootcamp then open residency, help raising from top VCs. Hubs in SF, NYC and Bengaluru.",
+ port:"Render",anti:"",
+ news:"Jan 2026: began raising a $500M Fund IV. Fall 2026 fellowship applications closed 2 Aug 2026.",
+ contact:"Apply: southparkcommons.com/apply",
+ src:[["Funds","https://en.wikipedia.org/wiki/South_Park_Commons"],["F26 fellowship","https://www.southparkcommons.com/news/f26-founder-fellowship"]]},
+{n:"Entrepreneurs First",t:"Program",r:"Global",u:"https://www.joinef.com",
+ size:"$200M raise (Mar 2026)",sizeD:"$130M into management company, $70M into the investment fund; $1.3B valuation.",
+ hook:"Find a co-founder and idea from scratch, then raise in the Bay Area",
+ ben:"Talent-first program: co-founder matching, idea development, pre-seed cheque, Bay Area relocation to raise. Offices in London, Paris, Bangalore, SF.",
+ port:"Cleo, Tractable, Aztec, Gensyn, PolyAI",anti:"",
+ news:"Became a unicorn with the $200M raise; co-founder Matt Clifford stepped back in April 2026.",
+ contact:"joinef.com",
+ src:[["$200M raise","https://www.vcaonline.com/news/2026031122/entrepreneurs-first-raises-200m-of-fresh-capital-to-unlock-the-next-generation-of-outlier-founders/"],["Valuation","https://seedtable.com/companies/entrepreneurs-first/funding-rounds/series-d-2026-03"]]},
+{n:"Techstars",t:"Accelerator",r:"Global",u:"https://www.techstars.com",
+ size:"$220K per company",sizeD:"$20K for 5% common + $200K uncapped MFN SAFE. 3-month programs.",
+ hook:"Mentor-driven programs plus partner perks",
+ ben:"Mentor network, corporate-partner programs, Premier Partner perks (e.g. DigitalOcean cloud), Techstars Anywhere remote track, Founder Catalyst pre-accelerator.",
+ port:"SendGrid, ClassPass, DigitalOcean",anti:"",
+ news:"Ranked No. 1 on TIME/Statista 2026 Accelerator List; Boulder program returned in 2026 while some European programs closed.",
+ contact:"Apply: techstars.com",
+ src:[["$220K deal","https://elev-x.com/news-insights/article-techstars-accelerator-review/"],["Oct 2026 news","https://blog.mean.ceo/?p=11585"]]},
+{n:"Hustle Fund",t:"VC",r:"Global",u:"https://www.hustlefund.vc",
+ size:"Fund IV target $50M",sizeD:"Pre-seed/seed software. Fundraising began Mar 2025; nearing target Mar 2026.",
+ hook:"Angel Squad community and fast pre-seed decisions",
+ ben:"Angel Squad (investor education + co-invest community), founder content and programming, hands-on support before follow-on decisions.",
+ port:"See hustlefund.vc/founders",anti:"",
+ news:"Named among TIME's America's Top VC Firms 2026; Fund IV near its $50M goal.",
+ contact:"hustlefund.vc",
+ src:[["Fund IV","https://pipelineroad.com/news/20260325-hustle-fund-nears-50m-goal-for-fund-iv"],["Profile","https://en.wikipedia.org/wiki/Hustle_Fund"]]},
+{n:"Antler",t:"Program",r:"Global",u:"https://www.antler.co",
+ size:"$1.6B+ AUM global",sizeD:"27 cities. Antler India maiden fund ₹600 Cr (~$75M). Embark 3: leads $600–800K pre-seed rounds with a $450K cheque.",
+ hook:"Residency to find co-founders; Embark US market-entry program",
+ ben:"Antler Residency (co-founder matching), pre-seed capital, Antler Elevate follow-on, Embark program for India/SEA startups entering the US.",
+ port:"Namma Yatri (Moving Tech), Cautio, Mysa",anti:"",
+ news:"Antler India did 57 investments in 2025 (2x YoY); doubling cheque sizes and speed for AI/deep-tech (Jan 2026). Raising India Fund II.",
+ contact:"Apply: antler.co/apply",
+ src:[["Embark 3","https://yourstory.com/2026/03/antler-india-3rd-cohort-us-market-entry-programme-for-startups"],["AUM","https://jobs.weekday.works/capital-partner-india-at-antler-wkdyx3wruf"],["2025 deals","https://www.cbinsights.com/investor/antler-india"]]},
+{n:"Peak XV Partners · Surge",t:"VC",r:"India",u:"https://www.peakxv.com",
+ size:"$1.3B new funds (2026)",sizeD:"India seed, India venture and APAC funds. Surge seed cheque ceiling raised to $5M (from $3M).",
+ hook:"Surge: dedicated partner per company, US immersion",
+ ben:"Surge seed platform with a dedicated investing partner, US Immersion trip, sessions with leading global VCs, no board seat at seed.",
+ port:"Zomato, Pine Labs, Groww, Plum",anti:"",
+ news:"Sept 2026: Surge 12 cohort of 18 startups, $50M+ invested. Feb 2026: closed $1.3B across three funds.",
+ contact:"peakxv.com",
+ src:[["Surge 12","https://techcrunch.com/2026/09/28/peak-xv-goes-bigger-at-seed-with-new-surge-cohort-as-series-a-bar-rises/"],["$1.3B","https://pulse2.com/peak-xv-partners-1-3-billion-raised-across-three-new-funds-to-back-founders-in-india-apac-and-beyond"]]},
+{n:"Accel India · Atoms",t:"VC",r:"India",u:"https://atoms.accel.com",
+ size:"Fund IX $550M",sizeD:"Closed Aug 2026 within a $3.5B global raise. Atoms: up to $1M per startup; AI Cohort 2026 up to $2M with Google.",
+ hook:"$5M+ in partner perks through Atoms",
+ ben:"Atoms pre-seed scaling program: up to $1M, $5M+ perks, mentorship. Atoms AI cohort co-invests with Google AI Futures Fund. Tracks for AI and LeapTech.",
+ port:"Flipkart, Swiggy, Freshworks",anti:"",
+ news:"Aug 2026: oversubscribed $550M India fund closed in weeks. Nov 2025: Atoms AI Cohort 2026 with Google.",
+ contact:"Apply year-round: atoms.accel.com",
+ src:[["Fund IX","https://techcrunch.com/2026/08/11/accel-closes-oversubscribed-550m-india-fund-within-weeks-19-months-after-its-last/"],["Atoms + Google","https://india.entrepreneur.com/?p=90638"],["Atoms perks","https://techintelpro.com/news/ai/enterprise-ai/accel-boosts-indian-origin-ai-and-leaptech-startups-with-1m-funding"]]},
+{n:"Elevation Capital",t:"VC",r:"India",u:"https://elevationcapital.com",
+ size:"Fund IX $500M",sizeD:"Seed/Series A for AI-first startups (Jul 2026), $2–5M cheques. Plus $400M Elevation Holdings late-stage fund.",
+ hook:"Seed-to-IPO continuity with a dedicated pre-IPO vehicle",
+ ben:"Early-stage support plus Elevation Holdings ($20–50M cheques) for IPO-bound companies.",
+ port:"Paytm, Swiggy, Meesho, Urban Company",anti:"",
+ news:"Closed Fund IX at $500M in July 2026, focused on AI application-layer startups.",
+ contact:"elevationcapital.com",
+ src:[["Fund IX","https://www.everythingstartups.com/vc-funds/elevation-capital"],["Elevation Holdings","https://indianstartupnews.com/news/elevation-capital-launches-400-million-fund-to-invest-in-ipo-bound-startups-9765240"]]},
+{n:"Blume Ventures",t:"VC",r:"India",u:"https://blume.vc",
+ size:"Fund V target $250–275M",sizeD:"First close $175M (Oct 2025); 30–35 new startups. ~$900M AUM.",
+ hook:"Founder support programs and cross-border focus",
+ ben:"Seed to pre-Series A support, founder programs, Fund 1Y continuity vehicle for follow-ons.",
+ port:"Turtlemint, Mave Health, PowerUp Money",anti:"",
+ news:"Turtlemint filed its DRHP; Blume expected $80M+ aggregate DPI in 2025.",
+ contact:"blume.vc",
+ src:[["Fund V","https://blume.vc/commentaries/we-closed-175-million-of-our-fund-v-target-of-250-275-million-for-the-final-close"]]},
+{n:"Stellaris Venture Partners",t:"VC",r:"India",u:"https://stellarisvp.com",
+ size:"Fund III $300M",sizeD:"Seed and Series A, entry cheques up to $10M, 25–30 companies.",
+ hook:"Leads seed rounds with hands-on partner support",
+ ben:"Lead investor at seed/Series A; consumer, enterprise software, AI and fintech focus.",
+ port:"Mamaearth, Whatfix, Zouk",anti:"",
+ news:"2026 deals: Material Depot $10M Series A (with Accel), Arrowhead $3M seed.",
+ contact:"stellarisvp.com",
+ src:[["Fund III","https://yourstory.com/2024/11/stellaris-venture-partners-closes-fund-mamaearth-zouk-whatfix"],["Recent deals","https://f4.fund/firms/stellaris-venture-partners"]]},
+{n:"Z47 (ex-Matrix Partners India)",t:"VC",r:"India",u:"https://www.z47.com",
+ size:"Raising $300–400M",sizeD:"First fund since splitting from Matrix. Last fund (Matrix India IV) ~$550M in 2023.",
+ hook:"Early-stage lead investor across fintech and consumer",
+ ben:"Seed/early leads, co-leads with Accel and Peak XV, portfolio monetization support ahead of IPOs.",
+ port:"Ola, Razorpay, OfBusiness, Stable Money",anti:"",
+ news:"May 2026: MD Sudipto Sannigrahi stepped down during the fundraise.",
+ contact:"z47.com",
+ src:[["Fundraise","https://whalesbook.com/news/English/startupsvc/Z47-Fundraise-Faces-Pressure-Amid-Senior-Exits-LP-Scrutiny/69fd544a0fc858706ca88646"],["Exit","https://www.pulse.bot/venture-capital/news/z47-managing-director-sudipto-sannigrahi-steps-down-0d470a88-e9d3-4e17-9320-651da34b68b9/"]]},
+{n:"Speciale Invest",t:"VC",r:"India",u:"https://www.specialeinvest.com",
+ size:"Growth Fund II ₹1,400 Cr",sizeD:"Series A+ deep-tech, $5–8M cheques, 12–15 companies. Fund III ₹600 Cr for seed.",
+ hook:"Deep-tech specialist from seed to growth",
+ ben:"Patient capital for space, advanced manufacturing, energy, quantum and defence tech; 30–40% reserved for follow-ons.",
+ port:"Agnikul Cosmos, GalaxEye, Ultraviolette",anti:"",
+ news:"Launched Growth Fund II (Dec 2025); first close expected in 2026. Nine M&A exits to date.",
+ contact:"specialeinvest.com",
+ src:[["Growth Fund II","https://entrackr.com/snippets/speciale-invest-floats-rs-1400-cr-fund-to-back-deep-tech-startups-10919743"]]},
+{n:"100X.VC",t:"VC",r:"India",u:"https://www.100x.vc",
+ size:"~$150K per startup",sizeD:"Class model via iSAFE notes; Class 12 invested $2.7M across 18 startups. 180+ investments.",
+ hook:"100+ mentor hours and VC Pitch Day",
+ ben:"Class-based cohorts, 100+ hours of mentorship, VC Pitch Day to funds and angels, founder-friendly iSAFE terms.",
+ port:"180+ early-stage startups since 2019",anti:"",
+ news:"Former partners launched 247VC with a ₹250 Cr seed fund (2026).",
+ contact:"Apply: 100x.vc",
+ src:[["Class 12","https://www.100x.vc/press-releases/100-x-vc-invests-usd-2-7-mn-in-18-startups-as-part-of-class-12"],["247VC","https://startupstories.in/news/funding/ex-100x-vc-partners-launch-247vc-announce-inr-250-crore-fund-for-seed-stage-startups?amp=1"]]},
+{n:"Titan Capital",t:"Angel",r:"India",u:"https://www.titancapital.vc",
+ size:"Winners Fund ₹333 Cr",sizeD:"Follow-on fund for ~20 breakout seed companies, ~₹15 Cr cheques. 280+ seed investments since 2011.",
+ hook:"Operator angels (Snapdeal founders) who follow on",
+ ben:"Kunal Bahl and Rohit Bansal's operator network, dedicated follow-on capital for winners.",
+ port:"Razorpay, Ola, Mamaearth, Urban Company",anti:"",
+ news:"Winners Fund backed Anveshan (May 2026).",
+ contact:"titancapital.vc",
+ src:[["Winners Fund","https://yourstory.com/2024/10/titan-capital-winners-fund-announces-final-close-ola-urban-company-razorpay"],["Recent deal","https://pitchbook.com/profiles/fund/26232-58F"]]},
+{n:"IAN Group (Indian Angel Network)",t:"Angel",r:"India",u:"https://www.indianangelnetwork.com",
+ size:"Alpha Fund $100M",sizeD:"Final close Dec 2025, to be fully deployed by 2027. Also IAN Angel Fund and BioAngels.",
+ hook:"Angel network + VC funds, strong in Tier II/III cities",
+ ben:"Mentor-heavy angel network, sector programs (BioAngels), follow-on via Alpha Fund; DPIIT Fund of Funds is an LP.",
+ port:"FarEye, Staqu, Peptris",anti:"",
+ news:"Alpha Fund led Peptris' ₹70 Cr Series A with Speciale Invest.",
+ contact:"indianangelnetwork.com",
+ src:[["Alpha Fund","https://yourstory.com/2025/12/ian-group-announces-final-close-of-alpha-fund-at-100m"],["Deals","https://www.marcamoney.com/ian-group-announces-final-close-of-ian-alpha-fund-with-100-million/"]]},
+{n:"Kalaari Capital",t:"VC",r:"India",u:"https://www.kalaari.com",
+ size:"~$650M AUM",sizeD:"Four funds; Fund IV anchored by Reliance Industries.",
+ hook:"CXXO program for women founders",
+ ben:"CXXO initiative and fund for women-led startups, early-stage tech support across deep tech, SaaS and AI.",
+ port:"Dream11, Myntra, Snapdeal",anti:"",
+ news:"Feb 2026 investments: Articulus Surgical, HireBound.",
+ contact:"kalaari.com",
+ src:[["Recent activity","https://f4.fund/firms/kalaari-capital"]]}
+];
+
+const ORIG_GEO={"Y Combinator":["North America","USA"],"a16z speedrun":["North America","USA"],"Sequoia Arc":["North America","USA"],"First Round Capital":["North America","USA"],"Bessemer Venture Partners":["North America","USA"],"Lightspeed Venture Partners":["North America","USA"],"Index Ventures":["Europe","UK/Switzerland"],"General Catalyst":["North America","USA"],"NFX":["North America","USA"],"South Park Commons":["North America","USA"],"Entrepreneurs First":["Europe","UK"],"Techstars":["North America","USA"],"Hustle Fund":["North America","USA"],"Antler":["Southeast Asia","Singapore"]};
+const TYPES=["VC","Accelerator","Program","Angel","CVC","Sovereign","Government"];
+const REGIONS=["North America","Latin America","Europe","Israel","Middle East","Africa","South Asia","Southeast Asia","East Asia","Oceania","Central Asia"];
+
+const BASE=F.map(f=>{const g=ORIG_GEO[f.n]||["South Asia","India"];return{n:f.n,t:f.t,g:g[0],c:g[1],u:f.u,size:f.size,sizeD:f.sizeD,hook:f.hook,ben:f.ben,port:f.port,anti:f.anti,news:f.news,contact:f.contact,src:f.src,tier:"Researched"};})
+ .concat((window.FUNDS_EXTRA||[]).map(a=>({n:a[0],t:a[1],g:a[2],c:a[3],u:a[4],size:a[5],ben:a[6],hook:a[6].split(/[;.]/)[0],port:a[7],news:a[8]==="—"?"":a[8],anti:"",contact:"",tier:"Listed"})));
+let COMMUNITY=[];
+const all=()=>BASE.concat(COMMUNITY);
+
+const state={q:"",region:"All",country:"All",type:"All",tier:"All",shown:60};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const safeUrl=u=>/^https?:\/\/[^\s"'<>]+$/i.test(u||"")?u:"";
+
+function stats(){
+  const A=all(),countries=new Set(A.map(f=>f.c));
+  $("#stats").innerHTML=`<span><b>${A.length}</b> listings</span><span><b>${countries.size}</b> countries</span><span><b>${A.filter(f=>f.t==="Sovereign").length}</b> sovereign funds</span><span><b>${A.filter(f=>f.t==="Accelerator"||f.t==="Program").length}</b> accelerators & programs</span>`;
+}
+function chips(el,key,opts){
+  el.innerHTML=opts.map(o=>`<button type="button" class="chip" aria-pressed="${state[key]===o}" data-v="${esc(o)}">${esc(o)}</button>`).join("");
+  el.onclick=e=>{const b=e.target.closest("button");if(!b)return;state[key]=b.dataset.v;state.shown=60;chips(el,key,opts);render();};
+}
+function fillSelects(){
+  const r=$("#region");r.innerHTML=["All regions",...REGIONS].map((x,i)=>`<option value="${i?esc(x):"All"}">${esc(x)}</option>`).join("");
+  r.value=state.region;
+  const cs=[...new Set(all().filter(f=>state.region==="All"||f.g===state.region).map(f=>f.c))].sort();
+  if(state.country!=="All"&&!cs.includes(state.country))state.country="All";
+  $("#country").innerHTML=`<option value="All">All countries</option>`+cs.map(c=>`<option>${esc(c)}</option>`).join("");
+  $("#country").value=state.country;
+}
+function match(f){
+  if(state.region!=="All"&&f.g!==state.region)return false;
+  if(state.country!=="All"&&f.c!==state.country)return false;
+  if(state.type!=="All"&&f.t!==state.type)return false;
+  if(state.tier!=="All"&&f.tier!==state.tier)return false;
+  if(!state.q)return true;
+  return [f.n,f.c,f.g,f.t,f.port,f.ben,f.news,f.anti].join(" ").toLowerCase().includes(state.q);
+}
+const field=(h,v,cls="",empty="Not disclosed")=>`<div class="f ${cls}"><h4>${h}</h4><p class="${v?"":"dim"}">${v?esc(v):empty}</p></div>`;
+function row(f){
+  const url=safeUrl(f.u);
+  const tagT=f.t==="Sovereign"||f.t==="Government"?"tag sov":"tag";
+  return `<details class="fund">
+ <summary>
+  <div><div class="nm">${esc(f.n)}</div><div class="tags"><span class="tag geo">${esc(f.c)}</span><span class="${tagT}">${esc(f.t)}</span><span class="tag tier">${esc(f.tier)}</span></div></div>
+  <div class="size">${esc(f.size||"—")}</div>
+  <div class="hook">${esc(f.hook||"")}</div>
+  <div class="chev" aria-hidden="true">›</div>
+ </summary>
+ <div class="sheet">
+  ${field("Fund size & terms",f.sizeD||f.size&&f.size!=="—"?(f.sizeD||f.size):"")}
+  ${field("Benefits offered",f.ben)}
+  ${field("Portfolio",f.port&&f.port!=="See site"?f.port:"","","See the fund's site")}
+  ${field("Anti-portfolio",f.anti,"","Not published")}
+  ${field("Recent news",f.news,"wide","No verified news in this pass")}
+  ${field("Contact",f.contact||(url?url.replace(/^https?:\/\//,""):""))}
+  <div class="f"><h4>Listing</h4><p>${url?`<a class="visit" href="${esc(url)}" target="_blank" rel="noopener">Visit ${esc(f.n.split(" ·")[0])} ↗</a>`:`<span class="dim">No valid link</span>`}</p></div>
+  ${f.src?`<div class="f wide"><h4>Sources</h4><div class="src">${f.src.map(s=>`<a href="${esc(s[1])}" target="_blank" rel="noopener">${esc(s[0])}</a>`).join("")}</div></div>`:
+   `<div class="f wide"><h4>Profile</h4><p class="dim">${f.tier==="Community"?"Submitted by the fund and approved by a moderator.":"Compiled from public information; confirm figures on the fund's site."}</p></div>`}
+  ${f.tier==="Community"&&isMod?`<div class="f wide"><button class="btn bad" type="button" data-unpub="${esc(f.id)}">Unpublish this listing</button></div>`:""}
+ </div>
+</details>`;
+}
+function render(){
+  const rows=all().filter(match);
+  $("#count").textContent=`${rows.length} matching`;
+  $("#list").innerHTML=rows.length?rows.slice(0,state.shown).map(row).join(""):`<div class="empty">No funds match. Clear the search or switch filters.</div>`;
+  const mb=$("#moreBtn");mb.hidden=rows.length<=state.shown;mb.textContent=`Show more (${rows.length-state.shown} left)`;
+  stats();
+}
+$("#moreBtn").onclick=()=>{state.shown+=80;render();};
+$("#q").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase();state.shown=60;render();});
+$("#region").onchange=e=>{state.region=e.target.value;state.shown=60;fillSelects();render();};
+$("#country").onchange=e=>{state.country=e.target.value;state.shown=60;render();};
+chips($("#typeChips"),"type",["All",...TYPES]);
+chips($("#tierChips"),"tier",["All","Researched","Listed"]);
+fillSelects();render();
+
+$("#copy").addEventListener("click",()=>{
+  const cols=["Name","Type","Region","Country","Size","Benefits","Portfolio","Anti-portfolio","Recent news","Contact","Website","Profile"];
+  const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const csv=[cols.join(",")].concat(all().map(f=>[f.n,f.t,f.g,f.c,f.sizeD||f.size,f.ben,f.port,f.anti||"Not published",f.news,f.contact||f.u,f.u,f.tier].map(q).join(","))).join("\n");
+  const b=$("#copy");
+  navigator.clipboard.writeText(csv).then(()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy as CSV",1600);})
+   .catch(()=>{b.textContent="Copy blocked";setTimeout(()=>b.textContent="Copy as CSV",1600);});
+});
+
+// ===== Submission desk =====
+function copyBtn(btn,text,label){
+  navigator.clipboard.writeText(text).then(()=>{btn.textContent="Copied";setTimeout(()=>btn.textContent=label,1600);})
+   .catch(()=>{btn.textContent="Select and copy";setTimeout(()=>btn.textContent=label,1600);});
+}
+$("#copyEmail").onclick=e=>copyBtn(e.currentTarget,"meraj@code.in","Copy email");
+$("#copyTpl").onclick=e=>copyBtn(e.currentTarget,$("#tpl").textContent,"Copy template");
+</script>
+
+</body>
+</html>
